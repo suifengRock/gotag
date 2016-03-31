@@ -41,14 +41,14 @@ then you can see the user struct
 	}
 
 ## notice
-	1: you need write *// @Tag: * comment on the first field of the struct
-	2: after the *// @Tag: *, write you need the tag
-	3: see the struct user in example 
+1. you need write ```@Tag:``` comment on the first field of the struct
+2. after the ```@Tag:```, write you need the tag
+3. see the struct user in example 
 
 ## extend
-	1: add or overloaded tag's translate handle: [see this](https://github.com/suifengRock/gotag/blob/master/tag.go)
-	2: add or overloaded node's parse handle: [see this](https://github.com/suifengRock/gotag/blob/master/parser.go)
-	3: use middleware to filter and parse node 
+1. add or overloaded tag's translate handle: [see this](https://github.com/suifengRock/gotag/blob/master/tag.go)
+2. add or overloaded node's parse handle: [see this](https://github.com/suifengRock/gotag/blob/master/parser.go)
+3. use middleware to filter and parse node 
 
 ## support
 If you do have a contribution for the package feel free to put up a Pull Request or open Issue.
