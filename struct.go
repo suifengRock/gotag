@@ -12,6 +12,14 @@ const (
 	StructToken  = "@Tag:"
 )
 
+var (
+	genAfterDelToken = false
+)
+
+func SetGenAfterDelToken(isDel bool) {
+	genAfterDelToken = isDel
+}
+
 func FilterStruct(f *ast.File) {
 	ast.Inspect(f, func(n ast.Node) bool {
 		switch t := n.(type) {
@@ -31,9 +39,14 @@ func parseStruct(n *ast.StructType) {
 	if first.Doc == nil {
 		return
 	}
-	tagMap := getTags(first.Doc.List)
+	tagMap, tagIndex := getTags(first.Doc.List)
 	if len(tagMap) == 0 {
 		return
+	}
+	if genAfterDelToken {
+		newList := first.Doc.List[:tagIndex]
+		newList = append(newList, first.Doc.List[tagIndex+1:]...)
+		first.Doc.List = newList
 	}
 	for _, field := range n.Fields.List {
 		if field.Tag == nil {
@@ -59,7 +72,6 @@ func parseStruct(n *ast.StructType) {
 				}
 			}
 		}
-
 	}
 }
 
@@ -79,9 +91,9 @@ func newTag(tagMap map[string]bool, pos token.Pos, fieldName string) *ast.BasicL
 	return tag
 }
 
-func getTags(list []*ast.Comment) map[string]bool {
+func getTags(list []*ast.Comment) (map[string]bool, int) {
 	tagMap := map[string]bool{}
-	for _, c := range list {
+	for i, c := range list {
 		if strings.Contains(c.Text, StructToken) {
 			tagComment := strings.Replace(c.Text, CommentToken, "", 1)
 			tagComment = strings.Replace(tagComment, StructToken, "", 1)
@@ -90,7 +102,8 @@ func getTags(list []*ast.Comment) map[string]bool {
 			for _, tag := range tags {
 				tagMap[tag] = true
 			}
+			return tagMap, i
 		}
 	}
-	return tagMap
+	return tagMap, 0
 }

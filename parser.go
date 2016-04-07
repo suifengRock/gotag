@@ -71,8 +71,6 @@ func (p *Parser) ParsePkg(path string) {
 		go func(fset *token.FileSet, files map[string]*ast.File) {
 			for path, file := range files {
 				go func(fset *token.FileSet, f *ast.File, path string) {
-					fmt.Println(path)
-
 					p.Run(f)
 					writeFile(fset, f, path)
 				}(fset, file, path)
